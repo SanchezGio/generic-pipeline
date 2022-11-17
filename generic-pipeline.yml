@@ -1,0 +1,87 @@
+trigger: none
+
+resources:
+  repositories:
+  - repository: capacitacion-devops
+    type: git
+    name: CapacitacionAgileWeek/capacitacion-devops
+    trigger:
+    - none
+
+  #No borrar, repositorios plantillas pipeline y release
+  - repository: angular-tasks
+    endpoint: AzureReposMoebiusSC
+    type: git
+    name: plantillas/angular-tasks
+    trigger:
+    - none
+
+  - repository: docker-tasks
+    endpoint: AzureReposMoebiusSC
+    type: git
+    name: plantillas/docker-tasks
+    trigger:
+    - none
+   
+  - repository: aks-tasks
+    endpoint: AzureReposMoebiusSC
+    type: git
+    name: plantillas/aks-tasks
+    trigger:
+    - none
+
+stages:
+- stage: CI
+  displayName: CI Stage
+  jobs:
+    - job: build
+      displayName: CI Stage
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+      - script: | 
+          echo "App: $(Build.Repository.Name). Last Commit: $(Build.SourceVersion)."
+        displayName: 'Repositorio a ejecutar'
+
+      - template: test-template.yml@angular-tasks
+        parameters:
+          organizationName: CelulaVentasDigitalesPrepago
+          repositoryName: $(Build.Repository.Name)
+          nodeVersion: 16.x
+          sonarKeySC: Sonar aks
+- stage: Environment
+  displayName: Environment Stage
+  jobs:
+    - job: provisionEnvironment
+      displayName: Aprovisionar Ambiente
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+      - template: template.yml@docker-tasks
+        parameters:
+          projectName: $(Build.Repository.Name)
+          repositoryName: $(Build.Repository.Name)
+          containerRegistrySC: aproddevopsrc
+          buildBranch: test
+- stage: test_ContinuousDeployment
+  displayName: CD stage
+  dependsOn: Environment
+  jobs:
+    - deployment: deploy
+      displayName: Deploy Test
+      pool:
+        vmImage: ubuntu-latest
+      #environment: ReferidosDesa.referidos-whatsapp
+      strategy:
+       runOnce:
+        deploy: 
+         steps:
+         - template: dev-generic-release.yml@aks-tasks
+           parameters:
+            repositoryName: $(Build.Repository.Name)
+            projectName: referidos
+            kubernetesSC: adesaakstransv01-referidos-whatsapp
+            namespace: default
+            secret: k8saproddevopsrcauth
+            containerRegistrySC: aproddevopsrc
+            buildBranch: test
