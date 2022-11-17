@@ -4,9 +4,9 @@ resources:
   repositories:
   - repository: capacitacion-devops
     type: git
-    name: CapacitacionAgileWeek/capacitacion-devops
+    name: TallerGrupo1/capacitacion-devops
     trigger:
-    - none
+    - test
 
   #No borrar, repositorios plantillas pipeline y release
   - repository: angular-tasks
@@ -45,7 +45,7 @@ stages:
 
       - template: test-template.yml@angular-tasks
         parameters:
-          organizationName: CelulaVentasDigitalesPrepago
+          organizationName: CapacitacionAgileWeek
           repositoryName: $(Build.Repository.Name)
           nodeVersion: 16.x
           sonarKeySC: Sonar aks
@@ -71,7 +71,7 @@ stages:
       displayName: Deploy Test
       pool:
         vmImage: ubuntu-latest
-      #environment: ReferidosDesa.referidos-whatsapp
+      environment: capacitacion
       strategy:
        runOnce:
         deploy: 
@@ -79,9 +79,10 @@ stages:
          - template: dev-generic-release.yml@aks-tasks
            parameters:
             repositoryName: $(Build.Repository.Name)
-            projectName: referidos
+            projectName: capacitacion-devops
             kubernetesSC: capacitacion
             namespace: default
             secret: k8saproddevopsrcauth
             containerRegistrySC: aproddevopsrc
             buildBranch: test
+
