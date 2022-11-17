@@ -80,7 +80,7 @@ stages:
            parameters:
             repositoryName: $(Build.Repository.Name)
             projectName: referidos
-            kubernetesSC: adesaakstransv01-referidos-whatsapp
+            kubernetesSC: capacitacion
             namespace: default
             secret: k8saproddevopsrcauth
             containerRegistrySC: aproddevopsrc
