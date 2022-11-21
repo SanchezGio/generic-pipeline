@@ -8,6 +8,11 @@ resources:
     trigger:
     - test
 
+  - repository: picweb-demo
+    type: git
+    name: TallerGrupo1/picweb-demo
+    trigger:
+    - test
   #No borrar, repositorios plantillas pipeline y release
   - repository: angular-tasks
     endpoint: AzureReposMoebiusSC
@@ -79,10 +84,11 @@ stages:
          - template: dev-generic-release.yml@aks-tasks
            parameters:
             repositoryName: $(Build.Repository.Name)
-            projectName: capacitacion-devops
+            projectName: $(Build.Repository.Name)
             kubernetesSC: sc-desa
             namespace: default
             secret: k8saproddevopsrcauth
             containerRegistrySC: aproddevopsrc
             buildBranch: test
+
 
