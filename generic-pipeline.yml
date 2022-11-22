@@ -8,11 +8,6 @@ resources:
     trigger:
     - test
 
-  - repository: picweb-demo
-    type: git
-    name: TallerGrupo1/picweb-demo
-    trigger:
-    - test
   #No borrar, repositorios plantillas pipeline y release
   - repository: angular-tasks
     endpoint: AzureReposMoebiusSC
