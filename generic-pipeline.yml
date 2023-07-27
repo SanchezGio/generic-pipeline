@@ -81,7 +81,7 @@ stages:
             repositoryName: $(Build.Repository.Name)
             projectName: $(Build.Repository.Name)
             kubernetesSC: sc-desa
-            namespace: default
+            namespace: labdevops
             secret: k8saproddevopsrcauth
             containerRegistrySC: aproddevopsrc
             buildBranch: test
